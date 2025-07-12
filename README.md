@@ -1,5 +1,5 @@
 # 🥗 NutriAI
-NutriAI is a WhatsApp-inspired AI chatbot interface that analyzes food images and descriptions to provide nutritional insights. Whether you snap a photo of your meal or describe it in text, NutriAI returns calorie and nutrient estimates—right in a sleek, real-time chat interface.
+NutriAI is an AI chatbot interface that analyzes food images and descriptions to provide nutritional insights. Whether you snap a photo of your meal or describe it in text, NutriAI returns calorie and nutrient estimates—right in a sleek, real-time chat interface.
 
 ## 🚀 Key Features
 -✅ WhatsApp-like UI – Familiar dark-mode chat interface with bubbles, timestamps, and typing indicators
@@ -38,3 +38,6 @@ NutriAI is a WhatsApp-inspired AI chatbot interface that analyzes food images an
 -Fitness enthusiasts
 
 -Anyone curious about their meal's nutritional value
+
+# Live Demo:
+https://jamiu-sosanya.github.io/nutriai
