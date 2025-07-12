@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NutriAI - Calorie Chat</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .chat-container {
+            height: calc(100vh - 140px);
+            background-color: #0b141a;
+            background-image: url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%233a4b5c' fill-opacity='0.1'%3E%3Cpath d='M50 50c0-5.523 4.477-10 10-10s10 4.477 10 10-4.477 10-10 10c0 5.523-4.477 10-10 10s-10-4.477-10-10 4.477-10 10-10zM10 10c0-5.523 4.477-10 10-10s10 4.477 10 10-4.477 10-10 10c0 5.523-4.477 10-10 10S0 25.523 0 20s4.477-10 10-10zm10 8c4.418 0 8-3.582 8-8s-3.582-8-8-8-8 3.582-8 8 3.582 8 8 8zm40 40c4.418 0 8-3.582 8-8s-3.582-8-8-8-8 3.582-8 8 3.582 8 8 8z' /%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+        .user-message {
+            border-radius: 7.5px 0 7.5px 7.5px;
+            max-width: 75%;
+            background-color: #005c4b;
+            color: #e9edef;
+            box-shadow: 0 1px 0.5px rgba(11,20,26,0.13);
+        }
+        .ai-message {
+            border-radius: 0 7.5px 7.5px 7.5px;
+            max-width: 75%;
+            background-color: #202c33;
+            color: #e9edef;
+            box-shadow: 0 1px 0.5px rgba(11,20,26,0.13);
+        }
+        .message-image {
+            max-width: 250px;
+            max-height: 250px;
+            border-radius: 7.5px;
+            cursor: pointer;
+        }
+        .typing-indicator {
+            display: inline-flex;
+            align-items: center;
+            padding: 8px 12px;
+            background-color: #202c33;
+            border-radius: 7.5px;
+            box-shadow: 0 1px 0.5px rgba(11,20,26,0.13);
+        }
+        .typing-dot {
+            width: 6px;
+            height: 6px;
+            background-color: #8696a0;
+            border-radius: 50%;
+            margin: 0 2px;
+            animation: typingAnimation 1.4s infinite ease-in-out;
+        }
+        .typing-dot:nth-child(1) {
+            animation-delay: 0s;
+        }
+        .typing-dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+        .typing-dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+        @keyframes typingAnimation {
+            0%, 60%, 100% {
+                transform: translateY(0);
+                opacity: 0.6;
+            }
+            30% {
+                transform: translateY(-3px);
+                opacity: 1;
+            }
+        }
+        #fileInput {
+            display: none;
+        }
+        .input-area {
+            background-color: #202c33;
+        }
+        .input-box {
+            background-color: #2a3942;
+            color: #d1d7db;
+        }
+        .header {
+            background-color: #202c33;
+            color: #e9edef;
+            border-bottom: 1px solid #222d34;
+        }
+        .time-stamp {
+            font-size: 11px;
+            color: #a3b3bc;
+            margin-top: 3px;
+            text-align: right;
+        }
+        .message-container {
+            position: relative;
+            padding-bottom: 18px;
+        }
+        .message-info {
+            position: absolute;
+            bottom: 2px;
+            right: 6px;
+            display: flex;
+            align-items: center;
+        }
+        .checkmark {
+            font-size: 12px;
+            margin-left: 2px;
+            color: #53bdeb;
+        }
+        body {
+            background-color: #0b141a;
+        }
+        .message-input {
+            color: #d1d7db;
+            caret-color: #e9edef;
+        }
+        .message-input::placeholder {
+            color: #8696a0;
+        }
+        .icon-button {
+            color: #8696a0;
+        }
+        .icon-button:hover {
+            color: #d1d7db;
+        }
+        .send-button {
+            background-color: #005c4b;
+            color: #e9edef;
+        }
+        .send-button:hover {
+            background-color: #008069;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mx-auto max-w-3xl h-screen flex flex-col">
+        <!-- Header -->
+        <header class="header p-3 flex items-center">
+            <div class="flex items-center">
+                <button class="mr-4 text-gray-300 icon-button">
+                    <i class="fas fa-arrow-left"></i>
+                </button>
+                <div class="w-10 h-10 rounded-full bg-gray-600 flex items-center justify-center">
+                    <i class="fas fa-robot text-green-400 text-xl"></i>
+                </div>
+                <div class="ml-3">
+                    <h1 class="text-lg font-semibold">NutriAI</h1>
+                    <p class="text-xs text-gray-400">Online</p>
+                </div>
+            </div>
+            <div class="ml-auto flex space-x-4">
+                <button class="text-gray-300 icon-button">
+                    <i class="fas fa-search"></i>
+                </button>
+                <button class="text-gray-300 icon-button">
+                    <i class="fas fa-ellipsis-v"></i>
+                </button>
+            </div>
+        </header>
+
+        <!-- Chat Area -->
+        <div class="chat-container overflow-y-auto p-2 flex-1">
+            <div class="flex flex-col space-y-1" id="chatMessages">
+                <!-- Welcome message -->
+                <div class="flex justify-start mb-1">
+                    <div class="ai-message p-2 px-3">
+                        <p>Hi there! 👋 I'm NutriAI. Send me a photo of your food and I'll analyze its nutritional content for you!</p>
+                        <div class="time-stamp">12:34 PM</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Input Area -->
+        <div class="input-area p-2 border-t border-gray-700">
+            <div class="flex items-center">
+                <button id="emojiBtn" class="icon-button p-2 rounded-full mx-1">
+                    <i class="far fa-smile text-xl"></i>
+                </button>
+                <button id="uploadBtn" class="icon-button p-2 rounded-full mx-1">
+                    <i class="fas fa-paperclip text-xl"></i>
+                </button>
+                <input type="file" id="fileInput" accept="image/*">
+                
+                <div class="flex-1 input-box rounded-full px-3 mx-1">
+                    <input type="text" id="messageInput" placeholder="Type a message..." 
+                           class="w-full bg-transparent border-none focus:outline-none message-input py-2">
+                </div>
+                
+                <button id="sendBtn" class="send-button p-2 rounded-full mx-1">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const chatMessages = document.getElementById('chatMessages');
+            const messageInput = document.getElementById('messageInput');
+            const sendBtn = document.getElementById('sendBtn');
+            const uploadBtn = document.getElementById('uploadBtn');
+            const fileInput = document.getElementById('fileInput');
+            
+            // Get current time in HH:MM AM/PM format
+            function getCurrentTime() {
+                const now = new Date();
+                let hours = now.getHours();
+                const minutes = now.getMinutes().toString().padStart(2, '0');
+                const ampm = hours >= 12 ? 'PM' : 'AM';
+                hours = hours % 12;
+                hours = hours ? hours : 12; // the hour '0' should be '12'
+                return `${hours}:${minutes} ${ampm}`;
+            }
+            
+            // Scroll to bottom of chat
+            function scrollToBottom() {
+                chatMessages.parentElement.scrollTop = chatMessages.parentElement.scrollHeight;
+            }
+            
+            // Add message to chat
+            function addMessage(text, isUser, isImage = false) {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = `flex ${isUser ? 'justify-end' : 'justify-start'} mb-1`;
+                
+                const messageContainer = document.createElement('div');
+                messageContainer.className = 'message-container';
+                
+                const messageContent = document.createElement('div');
+                messageContent.className = isUser ? 
+                    'user-message p-2 px-3' : 
+                    'ai-message p-2 px-3';
+                
+                if (isImage) {
+                    const img = document.createElement('img');
+                    img.src = text;
+                    img.className = 'message-image';
+                    img.alt = 'Uploaded food image';
+                    messageContent.appendChild(img);
+                } else {
+                    messageContent.innerHTML = text;
+                }
+                
+                // Add timestamp and checkmark
+                const timeDiv = document.createElement('div');
+                timeDiv.className = 'time-stamp';
+                timeDiv.textContent = getCurrentTime();
+                
+                if (isUser) {
+                    const messageInfo = document.createElement('div');
+                    messageInfo.className = 'message-info';
+                    messageInfo.innerHTML = `
+                        <span class="checkmark">
+                            <i class="fas fa-check"></i>
+                        </span>
+                    `;
+                    messageContent.appendChild(messageInfo);
+                }
+                
+                messageContainer.appendChild(messageContent);
+                messageContainer.appendChild(timeDiv);
+                messageDiv.appendChild(messageContainer);
+                chatMessages.appendChild(messageDiv);
+                scrollToBottom();
+            }
+            
+            // Show typing indicator
+            function showTypingIndicator() {
+                // Remove existing typing indicator if any
+                hideTypingIndicator();
+                
+                const typingDiv = document.createElement('div');
+                typingDiv.className = 'flex justify-start mb-1';
+                typingDiv.id = 'typingIndicatorContainer';
+                
+                const typingContent = document.createElement('div');
+                typingContent.className = 'typing-indicator';
+                
+                typingContent.innerHTML = `
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                `;
+                
+                typingDiv.appendChild(typingContent);
+                chatMessages.appendChild(typingDiv);
+                scrollToBottom();
+            }
+            
+            // Hide typing indicator
+            function hideTypingIndicator() {
+                const indicator = document.getElementById('typingIndicatorContainer');
+                if (indicator) {
+                    indicator.remove();
+                }
+            }
+            
+            // Send message to webhook
+            async function sendToWebhook(message, isImage = false, file = null) {
+                const webhookUrl = 'https://workflow.porifyx.com/webhook/7c640631-d42b-479f-9e73-550256852cd0';
+                
+                showTypingIndicator();
+                
+                try {
+                    let response;
+                    if (isImage && file) {
+                        const formData = new FormData();
+                        formData.append('data', file);
+                        formData.append('type', 'image');
+                        if (message) formData.append('message', message);
+                        
+                        response = await fetch(webhookUrl, {
+                            method: 'POST',
+                            body: formData
+                        });
+                    } else {
+                        response = await fetch(webhookUrl, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({
+                                message: message,
+                                type: 'chat'
+                            })
+                        });
+                    }
+
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+
+                    const responseData = await response.text();
+                    hideTypingIndicator();
+                    
+                    try {
+                        // First try to parse as JSON
+                        const jsonData = JSON.parse(responseData);
+                        let responseText = '';
+                        
+                        // Try different possible response formats
+                        if (jsonData.response) {
+                            responseText = jsonData.response;
+                        } else if (jsonData.message) {
+                            responseText = jsonData.message;
+                        } else if (jsonData.text) {
+                            responseText = jsonData.text;
+                        } else if (typeof jsonData === 'string') {
+                            responseText = jsonData;
+                        } else if (jsonData.choices && jsonData.choices[0] && jsonData.choices[0].message) {
+                            responseText = jsonData.choices[0].message.content;
+                        } else {
+                            // If no recognized format, stringify the whole response
+                            responseText = JSON.stringify(jsonData, null, 2);
+                        }
+                        
+                        // Display the response
+                        if (responseText.trim()) {
+                            addMessage(responseText, false);
+                        } else {
+                            addMessage("I've analyzed your food but didn't get any details. Please try again.", false);
+                        }
+                    } catch (e) {
+                        // If not JSON, display the raw response
+                        if (responseData.trim()) {
+                            addMessage(responseData, false);
+                        } else {
+                            addMessage("Received an empty response from the server.", false);
+                        }
+                    }
+                    
+                } catch (error) {
+                    hideTypingIndicator();
+                    console.error('Error:', error);
+                    // Don't show error message to user automatically
+                    // Let the webhook response handle any error messages
+                }
+            }
+            
+            // Send text message
+            function sendMessage() {
+                const message = messageInput.value.trim();
+                if (message) {
+                    addMessage(message, true);
+                    messageInput.value = '';
+                    sendToWebhook(message);
+                }
+            }
+            
+            // Handle image upload
+            uploadBtn.addEventListener('click', () => {
+                fileInput.click();
+            });
+            
+            fileInput.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(event) {
+                        const imageUrl = event.target.result;
+                        addMessage(imageUrl, true, true);
+                        sendToWebhook('Image uploaded', true, file);
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+            
+            // Event listeners
+            sendBtn.addEventListener('click', sendMessage);
+            
+            messageInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    sendMessage();
+                }
+            });
+            
+            // Initial scroll to bottom
+            scrollToBottom();
+        });
+    </script>
+</body>
+</html>
