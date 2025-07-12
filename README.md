@@ -1,27 +1,40 @@
-# NutriAI
+# 🥗 NutriAI
+NutriAI is a WhatsApp-inspired AI chatbot interface that analyzes food images and descriptions to provide nutritional insights. Whether you snap a photo of your meal or describe it in text, NutriAI returns calorie and nutrient estimates—right in a sleek, real-time chat interface.
 
-NutriAI is a WhatsApp-inspired chatbot interface that analyzes food images to provide nutritional information. Users can upload food photos or describe meals in chat, and the AI returns detailed calorie and nutrition estimates.
+## 🚀 Key Features
+-✅ WhatsApp-like UI – Familiar dark-mode chat interface with bubbles, timestamps, and typing indicators
 
+-📷 Image Analysis – Upload food photos for instant nutritional breakdown
 
-# Key Features
-WhatsApp-like UI - Familiar dark mode chat interface with message bubbles, timestamps, and typing indicators
-Image Analysis - Upload food photos for instant nutritional analysis
-Text Queries - Describe meals in text for nutritional information
-Real-time Feedback - Animated typing indicator during AI processing
-Responsive Design - Mobile-friendly interface that works across devices
+-📝 Text Queries – Describe meals in chat and get calorie estimates
 
+-⚡ Real-time Feedback – Typing animation while AI processes requests
 
-# Technology Stack
-Frontend: HTML5, CSS3, JavaScript
-Styling: Tailwind CSS with custom WhatsApp-inspired design
-Icons: Font Awesome
-Backend Integration: Webhook API for nutrition analysis
+-📱 Responsive Design – Works smoothly across mobile and desktop devices
 
+## 🧰 Technology Stack
+-Frontend: HTML5, CSS3, JavaScript
 
-# How It Works
-Users upload food images or describe meals in chat
-The system sends data to a nutrition analysis webhook
-AI processes the input and returns detailed nutritional information
-Results display in the chat interface with clear formatting
+-Styling: Tailwind CSS with custom WhatsApp-style theme
 
-Perfect for health-conscious users, diet trackers, or anyone wanting to quickly estimate meal nutrition!
+-Icons: Font Awesome
+
+-Backend: AI-powered nutrition analysis via webhook API
+
+## 🧠 How It Works
+-📤 Upload a food image or describe your meal in chat
+
+-🔁 The input is sent to a nutrition analysis webhook
+
+-🧠 AI processes the data and returns nutrition facts
+
+-💬 Results appear directly in the chat interface
+
+## 💡 Ideal For:
+-Health-conscious individuals
+
+-Diet and calorie trackers
+
+-Fitness enthusiasts
+
+-Anyone curious about their meal's nutritional value
