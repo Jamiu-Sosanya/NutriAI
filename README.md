@@ -40,4 +40,4 @@ NutriAI is an AI chatbot interface that analyzes food images and descriptions to
 -Anyone curious about their meal's nutritional value
 
 # Live Demo:
-https://jamiu-sosanya.github.io/nutriai
+https://jamiu-sosanya.github.io/NutriAI
